@@ -1,0 +1,21 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    paths-ignore:
+    - README.md
+    - .gitignore
+    - pull_request_template.md
+
+  push: 
+   branches:
+     - "**"
+          
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        uses: ../reusable-workflows/ci.yml
+

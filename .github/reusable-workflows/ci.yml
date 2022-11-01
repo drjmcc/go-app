@@ -1,16 +1,8 @@
-name: Continuous Integration
+name: Build & Test
 
 on:
-  pull_request:
-    paths-ignore:
-    - README.md
-    - .gitignore
-    - pull_request_template.md
-
-  push: 
-   branches:
-     - "**"
-          
+  workflow_call:
+    
 jobs:
   unit-test:
     name: Run unit tests
