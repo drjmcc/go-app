@@ -19,5 +19,5 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Run tests
-        uses: go-app/.github/reusable-workflows/ci.yml
+        uses: ./go-app/.github/reusable-workflows/ci.yml
 
