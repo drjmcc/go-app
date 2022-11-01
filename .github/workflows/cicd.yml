@@ -17,5 +17,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run tests
-        uses: ../reusable-workflows/ci.yml
+        uses: ./.github/reusable-workflows/ci.yml
 
