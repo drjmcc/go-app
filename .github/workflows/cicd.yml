@@ -14,10 +14,4 @@ on:
 jobs:
   build-test:
     name: Build & Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Run tests
-        uses: ./.github/reusable-workflows/ci.yml
-
+    uses: ./.github/workflows/ci.yml
