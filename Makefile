@@ -1,6 +1,6 @@
 .DEFAULT_GOAL = help
 
-APP := go-app
+APP := davidmcc99/go-app
 PKG := $(shell go list ./internal/...)
 
 COMPOSE_FILE := deployments/compose/docker-compose.yml
@@ -52,6 +52,14 @@ endif
 version:
 	@echo $(VERSION)
 
+ifeq "$(strip $(SHORTHASH))" ""
+ SHORTHASH := $(shell git rev-parse --short HEAD)
+endif
+
+.PHONY: shorthash
+shorthash:
+	@echo $(SHORTHASH)
+
 ## build: Build and tag an application Docker image
 .PHONY: build
 
@@ -70,6 +78,7 @@ build:
 	  --build-arg DATE="${DATE}" \
 	  --build-arg VERSION="${VERSION}" \
 	  --tag=$(IMAGE):$(VERSION) \
+	  --tag=$(IMAGE):$(SHORTHASH) \
 	  --tag=$(IMAGE):latest \
 	  .
 	@rm -rf vendor
@@ -83,6 +92,7 @@ build-arm64:
 	  --build-arg DATE="${DATE}" \
 	  --build-arg VERSION="${VERSION}" \
 	  --tag=$(IMAGE):$(VERSION) \
+	  --tag=$(IMAGE):$(SHORTHASH) \
 	  --tag=$(IMAGE):latest \
 	  .
 	@rm -rf vendor
@@ -90,18 +100,15 @@ build-arm64:
 ## push: Upload the most recent application image to the Docker registry
 .PHONY: push
 push:
-	git status
-	docker push $(IMAGE):$(VERSION)
-	docker push $(IMAGE):latest
+	git status	
+	docker tag $(IMAGE):$(SHORTHASH) $(IMAGE):$(VERSION)
 ifeq ($(ENVIRONMENT),prod)
 ifneq "$(strip $(SERVICE_TAG))" ""
 	docker tag $(IMAGE):$(VERSION) $(IMAGE):prod-$(SERVICE_TAG)-$(VERSION)-$(TS)
-	docker push $(IMAGE):prod-$(SERVICE_TAG)-$(VERSION)-$(TS)
 endif
-else
+else ifeq ($(ENVIRONMENT),dev)
 ifneq "$(strip $(SERVICE_TAG))" ""
 	docker tag $(IMAGE):$(VERSION) $(IMAGE):dev-$(SERVICE_TAG)-$(VERSION)-$(TS)
-	docker push $(IMAGE):dev-$(SERVICE_TAG)-$(VERSION)-$(TS)
 endif
 endif
 
