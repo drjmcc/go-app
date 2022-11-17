@@ -52,7 +52,7 @@ jobs:
           echo ${{ inputs.release-tag }}
 
       - name: Push service
-        if: contains(github.events.inputs.release-tag, 'test')
+        if: contains(${{ inputs.release-tag }}, 'test')
         run: |
           echo ${{ inputs.environment }}
           echo ${{ inputs.release-tag }}
