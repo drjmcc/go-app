@@ -43,13 +43,13 @@ jobs:
         run: echo ${{ steps.get-short-hash.outputs.short_hash }}
 
       - name: Push all services
-        if: contains(inputs.release-tag, "all")
+        if: contains(github.event.inputs.release-tag, "all")
         run: |
           echo ${{ inputs.environment }}
           echo ${{ inputs.release-tag }}
 
       - name: Push service
-        if: contains(inputs.release-tag, "test")
+        if: contains(github.event.inputs.release-tag, "test")
         run: |
           echo ${{ inputs.environment }}
           echo ${{ inputs.release-tag }}
