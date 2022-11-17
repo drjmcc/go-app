@@ -1,0 +1,28 @@
+name: Production Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      git-hash:
+        type: string
+        description: The git hash to rollback to. Must have an artifact tagged with the corresponding short hash.
+        required: true
+      environment:
+        type: string
+        description: The environment to rollback e.g. dev/prod etc.
+        required: true
+      service-tag:
+        type: string
+        description: The service tag to deploy e.g. post/author/all etc.
+        required: true
+
+jobs:
+  prod-release:
+    name: Rollback prod to a previous release 
+    uses: ./.github/workflows/pull-tag-push.yml
+    secrets:
+      GITHUBACTIONSTOKEN: ${{ secrets.GITHUBACTIONSTOKEN }}    
+    with:
+      release-tag: ${{ inputs.service-tag }}
+      environment: ${{ inputs.environment }}
+      git-hash: ${{ inputs.git-hash }}

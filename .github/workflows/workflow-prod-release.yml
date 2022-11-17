@@ -1,0 +1,16 @@
+name: Production Release
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  prod-release:
+    name: Production Release
+    uses: ./.github/workflows/pull-tag-push.yml
+    secrets:
+      GITHUBACTIONSTOKEN: ${{ secrets.GITHUBACTIONSTOKEN }}    
+    with:
+      release-tag: ${{ github.ref }}
+      environment: "prod"
+      git-hash: ${{ github.sha }}

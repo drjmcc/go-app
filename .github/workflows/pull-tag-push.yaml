@@ -1,0 +1,47 @@
+name: Pull, Tag & Push a container
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: The environment to deploy to e.g. dev/prod etc. Must correspond to a configured github environment.
+        required: true
+      release-tag:
+        type: string
+        description: The service tag to deploy e.g. post/author/all etc.
+        required: true
+      git-hash:
+        type: string
+        description: The full Git SHA to use to pull from ECR.
+        required: true
+
+jobs:
+  pull-tag-push:
+    name: Pull, Tag & Push a container
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read    
+    timeout-minutes: 5
+    steps:
+      - name: Set short git commit SHA
+        id: get-short-hash
+        run: |
+          shortHash=$(git rev-parse --short ${{ inputs.git-hash }})
+          echo "short_hash=$shortHash" >> $GITHUB_OUTPUT          
+
+      - name: Confirm git commit SHA output
+        run: echo ${{ steps.get-short-hash.outputs.short_sha }}
+
+      - name: Push all services
+        if: contains(${{ inputs.release-tag }}, "all")
+        run: |
+          echo ${{ inputs.environment }}
+          echo ${{ inputs.release-tag }}
+
+      - name: Push service
+        if: contains(${{ inputs.release-tag }}, "test")
+        run: |
+          echo ${{ inputs.environment }}
+          echo ${{ inputs.release-tag }}
