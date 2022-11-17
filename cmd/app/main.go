@@ -31,6 +31,7 @@ type model struct {
 	Name string              `bson:"name"`
 }
 
+// .
 func init() {
 
 	opt := options.Client().
