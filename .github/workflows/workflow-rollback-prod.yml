@@ -11,7 +11,7 @@ on:
         type: string
         description: The environment to rollback e.g. dev/prod etc.
         required: true
-      service-tag:
+      release-tag:
         type: string
         description: The service tag to deploy e.g. post/author/all etc.
         required: true
@@ -23,6 +23,6 @@ jobs:
     secrets:
       GITHUBACTIONSTOKEN: ${{ secrets.GITHUBACTIONSTOKEN }}    
     with:
-      release-tag: ${{ inputs.service-tag }}
+      release-tag: ${{ inputs.release-tag }}
       environment: ${{ inputs.environment }}
       git-hash: ${{ inputs.git-hash }}
