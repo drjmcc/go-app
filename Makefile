@@ -92,7 +92,7 @@ build-arm64:
 	  --build-arg DATE="${DATE}" \
 	  --build-arg VERSION="${VERSION}" \
 	  --tag=$(IMAGE):$(VERSION) \
-	  --tag=$(IMAGE):$(SHORTHASH) \
+	  --tag=$(IMAGE):$(SHORTHASH) 
 	  --tag=$(IMAGE):latest \
 	  .
 	@rm -rf vendor

@@ -1,0 +1,14 @@
+name: Prod Deploy
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  publish-container:
+    name: Download and publish container
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Get release from ECR
+        run: echo ${{ github.ref }}
