@@ -40,7 +40,7 @@ jobs:
           echo "short_hash=$shortHash" >> $GITHUB_OUTPUT          
 
       - name: Confirm git commit SHA output
-        run: echo ${{ steps.get-short-hash.outputs.short_sha }}
+        run: echo ${{ steps.get-short-hash.outputs.short_hash }}
 
       - name: Push all services
         if: contains(${{ inputs.release-tag }}, "all")
