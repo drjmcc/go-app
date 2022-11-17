@@ -15,6 +15,9 @@ on:
         type: string
         description: The full Git SHA to use to pull from ECR.
         required: true
+    secrets:
+      GITHUBACTIONSTOKEN:
+        required: true 
 
 jobs:
   pull-tag-push:
