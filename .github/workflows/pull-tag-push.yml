@@ -46,17 +46,21 @@ jobs:
       - name: Confirm git commit SHA output
         run: echo ${{ steps.get-short-hash.outputs.short_hash }}
 
+      - name: Get version tag
+        id: get-version
+        run: echo "version_tag=$(make version))" >> $GITHUB_OUTPUT
+
       - name: Output Inputs
         run: make version
 
       - name: Push all services
-        if: contains(inputs.release-tag, 'all')
+        if: contains(inputs.release-tag, 'all') && contains(steps.get-version.outputs.version_tag, steps.get-short-hash.outputs.short_hash)
         run: |
           echo ${{ inputs.environment }}
           echo ${{ inputs.release-tag }}
 
       - name: Push service
-        if: contains(inputs.release-tag, 'test')
+        if: contains(inputs.release-tag, 'test') && contains(steps.get-version.outputs.version_tag, steps.get-short-hash.outputs.short_hash)
         run: |
           echo ${{ inputs.environment }}
           echo ${{ inputs.release-tag }}
