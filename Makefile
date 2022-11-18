@@ -101,18 +101,13 @@ build-arm64:
 .PHONY: push
 push:
 	docker tag $(IMAGE):$(SHORTHASH) $(IMAGE):$(VERSION)
-	docker push $(IMAGE):$(VERSION)
-	docker push $(IMAGE):$(SHORTHASH)
 ifeq ($(ENVIRONMENT),prod)	
 ifneq "$(strip $(SERVICE_TAG))" ""
-	docker push $(IMAGE):latest
 	docker tag $(IMAGE):$(VERSION) $(IMAGE):prod-$(SERVICE_TAG)-$(VERSION)-$(TS)
-	docker push $(IMAGE):prod-$(SERVICE_TAG)-$(VERSION)-$(TS)
 endif
 else ifeq ($(ENVIRONMENT),dev)
 ifneq "$(strip $(SERVICE_TAG))" ""
 	docker tag $(IMAGE):$(VERSION) $(IMAGE):dev-$(SERVICE_TAG)-$(VERSION)-$(TS)
-	docker push $(IMAGE):dev-$(SERVICE_TAG)-$(VERSION)-$(TS)
 endif
 endif
 

@@ -34,6 +34,25 @@ jobs:
           fetch-depth: 0
           ref: ${{ inputs.git-hash }}
 
+      - name: Config GIT to install packages via HTTPS OAuth instead of HTTPS 
+        run:  |
+          git config --global url."https://${{ env.PAT_TOKEN }}:x-oauth-basic@github.com/businessinsider".insteadOf "https://github.com/businessinsider"
+          go env -w "GOPRIVATE=github.com/businessinsider/*"
+          pwd
+        working-directory: ./
+
+      - name: Config GIT to install packages via HTTPS OAuth instead of SSH 
+        run: |
+          git config --global url."https://${{ env.PAT_TOKEN }}@github.com/".insteadOf ssh://git@github.com/
+          pwd
+
+      - name: Build
+        run:  make build
+
+      - name: Logs setup if failure
+        if: failure()
+        run: make integ-logs
+
       - name: Output Inputs
         run: echo "${{ toJSON(github.event.inputs) }}"
       
@@ -53,14 +72,30 @@ jobs:
       - name: Confirm version tag output
         run: echo ${{ steps.get-version.outputs.version_tag }}
 
-      - name: Push all services
-        if: ${{ contains(inputs.release-tag, 'all') && contains(steps.get-version.outputs.version_tag, steps.get-short-hash.outputs.short_hash) }}
+      - name: Output inputs
         run: |
           echo ${{ inputs.environment }}
           echo ${{ inputs.release-tag }}
 
-      - name: Push service
-        if: ${{ contains(inputs.release-tag, 'test') && contains(steps.get-version.outputs.version_tag, steps.get-short-hash.outputs.short_hash) }}
+      - name: Push all services
+        if: contains(inputs.release-tag, 'all')
+        env:
+          SHORTHASH: ${{ steps.get-short-hash.outputs.short_hash }}
+          ENVIRONMENT: ${{ inputs.environment }}
         run: |
-          echo ${{ inputs.environment }}
-          echo ${{ inputs.release-tag }}
+          make push SERVICE_TAG=author
+          make push SERVICE_TAG=category
+          make push SERVICE_TAG=homepage
+          make push SERVICE_TAG=post
+          make push SERVICE_TAG=product
+          make push SERVICE_TAG=publication
+          make push SERVICE_TAG=sponsor
+          make push SERVICE_TAG=vertical
+
+      - name: Push Test service
+        if: contains(inputs.release-tag, 'test')
+        env:
+          SHORTHASH: ${{ steps.get-short-hash.outputs.short_hash }}
+          ENVIRONMENT: ${{ inputs.environment }}
+          SERVICE_TAG: test
+        run: make push
