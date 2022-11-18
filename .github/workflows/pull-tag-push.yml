@@ -50,6 +50,9 @@ jobs:
         id: get-version
         run: echo "version_tag=$(make version))" >> $GITHUB_OUTPUT
 
+      - name: Confirm version tag output
+        run: echo ${{ steps.get-version.outputs.version_tag }}
+
       - name: Output Inputs
         run: make version
 
